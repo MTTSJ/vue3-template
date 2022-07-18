@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  /**
+   *页面自适应代码，px转rem 请不要随意更改
+    */
+  (function () {
+    function resize () {
+      var ww = window.innerWidth
+      if (ww > window.screen.width) {
+        window.requestAnimationFrame(resize)
+      } else {
+        document.documentElement.style.fontSize = ww * 100 / 750 + 'px'
+      }
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+    window.addEventListener('pageshow', function (e) {
+      if (e.presisted) {
+        resize()
+      }
+    })
+    if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+      handleFontSize()
+    } else {
+      if (document.addEventListener) {
+        document.addEventListener("WeixinJSBridgeReady", handleFontSize, false)
+      } else if (document.attachEvent) {
+        //IE浏览器，非W3C规范
+        document.attachEvent("onWeixinJSBridgeReady", handleFontSize)
+      }
+    }
+
+    function handleFontSize () {
+      // 设置网页字体为默认大小
+      WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 })
+      // 重写设置网页字体大小的事件
+      WeixinJSBridge.on('menu:setfont', function () {
+        WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 })
+      })
+    }
+  })()
+</script>
+
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
